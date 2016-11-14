@@ -1,8 +1,8 @@
 Tässä tiedostossa on ryhmän palbobaggins projektisuunnitelma. Ryhmään kuuluu
 Atte Haapanen, 228855, ja Miska Melkinen, 234362.
 
-Projektissa käyttämämme apit ovat: jokin sääpalvelun apia, googlemaps api ja
-tampereen soutuvenerennat tai uimarantojen vedenlaatu api. Näistä rajapinnoista
+Projektissa käyttämämme apit ovat: jokin sääpalvelun apia (esimerkiksi Accuweather tai Yahoo weather), googlemaps api ja
+tampereen Syke pintavedenlaatutiedot rajapintaa. Näistä rajapinnoista
 muodostamme oman rajapinnan. Rajapintaamme voi käyttää palveluna selaimella.
 Palvelun ideana on syöttää sijainti, jonka mukaan näytetään lähimmät uimaran-
 nat, niiden vedenlaatu ja siellä vallitseva sää. Palvelu näyttää myös reitin
