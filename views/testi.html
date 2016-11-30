@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<title>Kartta</title>
+
+		<link rel="shortcut icon" href="favicon.ico">
+		<link rel="stylesheet" href="styles.css">
+
+		<script src="http://maps.googleapis.com/maps/api/js"></script>
+		<script>
+		var maatti1 = new google.maps.LatLng(61.6387421,23.1964193);
+		var maatti2 = new google.maps.LatLng(61.6385309,23.197295);
+		var pelikone = new google.maps.LatLng(61.6381363,23.1954772);
+		var pelikone2 = new google.maps.LatLng(61.6399627,23.1975163);
+		var veikkaus = new google.maps.LatLng(61.6393441,23.1972481);
+		function initialize() {
+		  	var mapProp = {
+		    	center:new google.maps.LatLng(61.638326,23.196349),
+		    	zoom:16,
+		    	mapTypeId:google.maps.MapTypeId.ROADMAP
+		  	};
+		  	var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+		  	var marker1=new google.maps.Marker({
+			  	position:maatti1,
+			  	icon:'rahatukku.jpg',
+			  	title:'Otto-automaatti',
+			});
+		  	var marker2=new google.maps.Marker({
+			  	position:maatti2,
+			  	icon:'rahatukku.jpg',
+			  	title:'Otto-automaatti',
+			});
+			var marker3=new google.maps.Marker({
+			  	position:pelikone,
+			  	icon:'uhkapeli.png',
+			  	title:'Pelikoneita',
+		  	});
+			var marker4=new google.maps.Marker({
+			  	position:pelikone2,
+			  	icon:'uhkapeli.png',
+			  	title:'Pelikoneita',
+			});
+			var marker5=new google.maps.Marker({
+			  	position:veikkaus,
+			  	icon:'uhkapeli.png',
+			  	title:'Veikkauspiste',
+			});		
+		marker1.setMap(map);
+		marker2.setMap(map);
+		marker3.setMap(map);
+		marker4.setMap(map);
+		marker5.setMap(map);
+		}
+		google.maps.event.addDomListener(window, 'load', initialize);
+		</script>
+
+	</head>
+	<body>
+		<div class="header">
+			<div class="container">
+				<h1>Keijon kotisivut</h1>
+			</div>
+		</div>
+		<div class="nav-bar">
+			<div class="container">
+				<ul class="nav">
+					<li><a href="paasivu.html">Pääsivu</a></li>
+					<li><a href="kartta.html">Kartta</a></li>
+					<li><a href="linkit.html">Linkkejä</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="content">
+			<div class="container">
+				<div>
+					<h1>Tässä on kartta parhaaseen kotipaikkakuntaan</h1>
+					<hr>
+				
+					<div id="googleMap" class="kartta" style="width:500px;height:380px;" align="middle"></div>
+					<br></br>
+					<table style="width:100%">
+						<tr>
+							<td><p>Hyviä pelipaikkoja:</p></td>
+							<td><p>Kun rahat loppuu:</p></td>
+						</tr>
+						<tr>
+							<td><img class="imgresize2" src="http://www.freespinsbonusar.com/wp-content/uploads/2015/01/casino-bonus-300x213.png" /></td>
+							<td><img class="imgresize2" src="http://im.mtv.fi/image/4558036/landscape16_9/1024/576/4a0c976ab11a7a7a39f0efbc045c14b8/Xv/rahatukku.jpg" /></td>
+						</tr>
+						<tr>
+							<td>
+								<ul>
+									<li>Selvi</li>
+									<li>Siwa</li>
+									<li>R-kioski</li>
+								</ul>
+							</td>
+							<td>
+								<ul>
+									<li>S-Marketin Otto-automaatti</li>
+									<li>Osuuspankin Otto-automaatti</li>
+								</ul>
+							</td>
+						</tr>
+					</table>
+
+
+					
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="container">
+				&copy; Copyright keijjO 2015
+			</div>
+		</div>
+	</body>
+</html>
