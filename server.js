@@ -32,10 +32,25 @@ router.get(/vedenlaatu/i, haeVedenlaatuApista)
 
 router.get("/paikka", haeKaikkiPaikat)
 
+router.get("/weather", getWeather)
 
 app.listen(3000,function(){
   console.log("Live at Port 3000");
 });
+
+function getWeather(req,res,next){
+	console.log("get weather called");
+	var YQL = require('yql');
+
+	var query = new YQL('select * from weather.forecast where (location = 94089)');
+
+	query.exec(function(err, data) {
+	  var location = data.query.results.channel.location;
+	  var condition = data.query.results.channel.item.condition;
+	  
+	  console.log('The current weather in ' + location.city + ', ' + location.region + ' is ' + condition.temp + ' degrees.');
+	});
+}
 
 function haeKaikkiPaikat(req,res,next){
 	var options = {
