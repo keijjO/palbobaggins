@@ -30,3 +30,10 @@ palvelu automattisesti laittaa uuden päivityksen twitteriin että nyt juostu
 näin paljon.
 5. https://fengshui-api.com/ + google calendar -> fengshuista tehdään joku haku,
 että onko hyvä päivä tms. ja tulos kirjoitetaan kalenteriin
+
+
+Yahoo weather avaimet
+Client ID (Consumer Key)
+dj0yJmk9Y1hPZkI4b3phTjdhJmQ9WVdrOWNVcE1VR0ZVTkdrbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD01Yg--
+Client Secret (Consumer Secret)
+0a02624f9c07c9c125a9c9fb238af58fb2d476d4
