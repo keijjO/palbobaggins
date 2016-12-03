@@ -4,6 +4,7 @@ var router = express.Router();
 var path = __dirname + '/views/';
 var http = require('http');
 
+//googlemaps api key:   AIzaSyDoZzVrqqQ0q8gES2N10l4qzSZKHS3LXIw
 router.use(function (req,res,next) {
   console.log("/" + req.method);
   next();
@@ -14,6 +15,9 @@ router.get("/",function(req,res){
   res.render(path + "weather.ejs");
 });
 
+router.get("/karttasivu",function(req,res){
+	res.sendFile(path + "karttasivu.html")
+});
 router.get("/kartta", function(req,res){
   res.sendFile(path + "testi.html");
 });
@@ -28,6 +32,7 @@ router.get('/weather/', getWeather);
 
 router.get('/nearestcity/', getNearestCity);
 router.get('/coordinates', getCoordinates);
+router.get('/weatherInCoords', getWeatherInCoords);
 
 
 
@@ -160,6 +165,16 @@ function getCoordinates(req, res)  {
 	});
 	req.end();
 };
+
+function getWeatherInCoords(req, res)  {
+	var lat = req.query.lat;
+	var lng = req.query.lng;
+	res.redirect("/nearestcity?lati="+lat+"&longi="+lng);
+	res.end();
+	
+};
+
+
 
 
 
