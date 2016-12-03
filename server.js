@@ -27,32 +27,60 @@ router.get("/testi", testi);
 router.get("/testi2", testi2);
 app.use("/",router);
 
-//vedenlaatu
-router.get(/vedenlaatu/i, haeVedenlaatuApista)
-
-router.get("/paikka", haeKaikkiPaikat)
-
-//router.get("/weather", getWeather)
+router.get(/weather/, getWeather)
 
 router.get(/nearestcity/, getNearestCity)
+
+
 
 app.listen(3000,function(){
   console.log("Live at Port 3000");
 });
 
-/* function getWeather(req,res,next){
-	console.log("get weather called");
-	var YQL = require('yql');
+//käytä näin
+//http://localhost:3000/weather?city=tampere
+function getWeather(req,res,next){
+	console.log("get weather");
+	
+	//Calls 10min: 600 
+	//Calls 1day: 50,000 
+	//Threshold: 7,200 
+	//Hourly forecast: 5 
+	var key = "1cc4e57135b51120a49c601ab2c82ed8";
+	var cityName = req.query.city;
+	console.log("city " + cityName)
+	var options = {
+	  host: 'api.openweathermap.org',
+	  path: '/data/2.5/weather?q='+cityName+'&APPID=1cc4e57135b51120a49c601ab2c82ed8'
+	};
+	
+	var req = http.get(options, function(rs) {
+	  console.log('STATUS: ' + res.statusCode);
+	  console.log('HEADERS: ' + JSON.stringify(res.headers));
 
-	var query = new YQL('select * from weather.forecast where (location = 94089)');
-
-	query.exec(function(err, data) {
-	  var location = data.query.results.channel.location;
-	  var condition = data.query.results.channel.item.condition;
-	  
-	  console.log('The current weather in ' + location.city + ', ' + location.region + ' is ' + condition.temp + ' degrees.');
+	  // Buffer the body entirely for processing as a whole.
+	  var bodyChunks = [];
+	  rs.on('data', function(chunk) {
+		// You can process streamed parts here...
+		bodyChunks.push(chunk);
+		
+	  }).on('end', function() {
+		var body = Buffer.concat(bodyChunks);
+		console.log('BODY: ' + body);
+		var bodyJSON = JSON.parse(body);
+		res.write(body);
+		res.end();
+		
+	  })
 	});
-} */
+	req.on('error', function(e) {
+	 console.log('ERROR: ' + e.message);
+	});
+		
+	
+	req.end();
+	
+}
 
 //käytä näin
 //http://localhost:3000/getnearestcity?lati=62.614806&longi=28.618057
@@ -98,73 +126,7 @@ function getNearestCity(req,res,next){
 	
 }
 
-function haeKaikkiPaikat(req,res,next){
-	var options = {
-	  host: 'rajapinnat.ymparisto.fi',
-	  path: '/api/vesla/1.0/Paikka'
-	};
-	
-	var req = http.get(options, function(rs) {
-	  console.log('STATUS: ' + res.statusCode);
-	  console.log('HEADERS: ' + JSON.stringify(res.headers));
 
-	  // Buffer the body entirely for processing as a whole.
-	  var bodyChunks = [];
-	  rs.on('data', function(chunk) {
-		// You can process streamed parts here...
-		bodyChunks.push(chunk);
-		res.write(chunk);
-	  }).on('end', function() {
-		var body = Buffer.concat(bodyChunks);
-		console.log('BODY: ' + body);
-		res.end();
-		
-	  })
-	});
-	req.on('error', function(e) {
-	 console.log('ERROR: ' + e.message);
-	});
-		
-	
-	req.end();
-}
-function haeVedenlaatuApista(req,res,next){
-	console.log("haeVedenlaatuApista kutsuttu" + req.method);
-	res.contentType('application/json');
-	var Body;
-	var CoordNorth = req.query.CoordNorth;
-	var CoordEast = req.query.CoordEast;
-	console.log('North ' + req.query.CoordNorth);
-	var options = {
-	  host: 'rajapinnat.ymparisto.fi',
-	  path: '/api/vesla/1.0/Site_Wide?%24filter=CoordYKJ_North%20eq%'+CoordNorth+'%20and%20CoordYKJ_East%20eq%'+CoordEast+'&%24select=Site_Id,Name,CoordYKJ_North,CoordYKJ_East'
-	};
-	
-	var req = http.get(options, function(rs) {
-	  console.log('STATUS: ' + res.statusCode);
-	  console.log('HEADERS: ' + JSON.stringify(res.headers));
-
-	  // Buffer the body entirely for processing as a whole.
-	  var bodyChunks = [];
-	  rs.on('data', function(chunk) {
-		// You can process streamed parts here...
-		bodyChunks.push(chunk);
-		res.write(chunk);
-	  }).on('end', function() {
-		var body = Buffer.concat(bodyChunks);
-		console.log('BODY: ' + body);
-		res.end();
-		
-	  })
-	});
-	req.on('error', function(e) {
-	 console.log('ERROR: ' + e.message);
-	});
-		
-	
-	req.end();
-	
-};
 
 function testi(req, res, next) {
 	console.log("toinen testi");
