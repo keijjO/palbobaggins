@@ -44,6 +44,7 @@ function getWeather(req,res,next){
 	//Calls 1day: 50,000 
 	//Threshold: 7,200 
 	//Hourly forecast: 5 
+
 	var key = "1cc4e57135b51120a49c601ab2c82ed8";
 	var cityName = req.query.city;
 	console.log("city " + cityName)
@@ -112,7 +113,7 @@ function getNearestCity(req,res,next){
 		var bodyJSON = JSON.parse(body);
 		var city = bodyJSON.results[0].name;
 		//console.log(city);
-		res.write(city);
+		res.redirect('/weather?city='+city);
 		res.end();
 		
 	  })
@@ -125,10 +126,13 @@ function getNearestCity(req,res,next){
 	req.end();
 	
 };
-
+//käytä näin
+//http://localhost:3000/coordinates?address=orivedenkatu+3
 function getCoordinates(req, res)  {
 	var address = req.query.address;
 	var http = require("http");
+	var lati = 0;
+	var longi = 0;
 	var options = {
 		host: 'maps.google.com',
 		path: '/maps/api/geocode/json?address=' + address
@@ -146,7 +150,7 @@ function getCoordinates(req, res)  {
 			var lati = bodyJSON.results[0].geometry.location.lat;
 			var longi = bodyJSON.results[0].geometry.location.lng;
 			console.log(lati, longi);
-			res.write(lati);
+			res.redirect('/nearestcity?lati='+lati+'&longi='+longi);
 			res.end();
 			
 	  })
