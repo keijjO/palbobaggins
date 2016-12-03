@@ -8,28 +8,26 @@ router.use(function (req,res,next) {
   console.log("/" + req.method);
   next();
 });
+app.set('view engine', 'ejs'); // set up ejs for templating
 
 router.get("/",function(req,res){
-  res.sendFile(path + "index.html");
+  res.render(path + "weather.ejs");
 });
 
-router.get("/about",function(req,res){
-  res.sendFile(path + "about.html");
-});
-
-router.get("/contact",function(req,res){
-  res.sendFile(path + "contact.html");
-});
 router.get("/kartta", function(req,res){
   res.sendFile(path + "testi.html");
+});
+router.get("/saa", function(req, res) {
+  res.render(path + "weather.ejs")
 });
 router.get("/testi", testi);
 router.get("/testi2", testi2);
 app.use("/",router);
 
-router.get(/weather/, getWeather)
+router.get('/weather/', getWeather);
 
-router.get(/nearestcity/, getNearestCity)
+router.get('/nearestcity/', getNearestCity);
+router.get('/coordinates', getCoordinates);
 
 
 
@@ -68,7 +66,9 @@ function getWeather(req,res,next){
 		var body = Buffer.concat(bodyChunks);
 		console.log('BODY: ' + body);
 		var bodyJSON = JSON.parse(body);
-		res.write(body);
+		var celcius = Math.round(bodyJSON.main.temp - 273.15);
+		var temperature = celcius + " C";
+		res.render('result.ejs', {temp: temperature, city: cityName});
 		res.end();
 		
 	  })
@@ -80,7 +80,7 @@ function getWeather(req,res,next){
 	
 	req.end();
 	
-}
+};
 
 //käytä näin
 //http://localhost:3000/getnearestcity?lati=62.614806&longi=28.618057
@@ -124,13 +124,44 @@ function getNearestCity(req,res,next){
 	
 	req.end();
 	
-}
+};
+
+function getCoordinates(req, res)  {
+	var address = req.query.address;
+	var http = require("http");
+	var options = {
+		host: 'maps.google.com',
+		path: '/maps/api/geocode/json?address=' + address
+	};
+	var req = http.get(options, function(rs) {
+		var bodyChunks = [];
+	  	rs.on('data', function(chunk) {
+			// You can process streamed parts here...
+			bodyChunks.push(chunk);
+		
+	  	}).on('end', function() {
+			var body = Buffer.concat(bodyChunks);
+			console.log('BODY: ' + body);
+			var bodyJSON = JSON.parse(body);
+			var lati = bodyJSON.results[0].geometry.location.lat;
+			var longi = bodyJSON.results[0].geometry.location.lng;
+			console.log(lati, longi);
+			res.write(lati);
+			res.end();
+			
+	  })
+	});
+	req.on('error', function(e) {
+	 console.log('ERROR: ' + e.message);
+	});
+	req.end();
+};
 
 
 
 function testi(req, res, next) {
 	console.log("toinen testi");
-	res.redirect("/kartta");
+	res.send("jeee");
 };
 function testi2(req,res,next) {
   	var req = http.get("http://www.google.fi", function(res) {

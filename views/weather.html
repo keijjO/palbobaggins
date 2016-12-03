@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<script>
+		$.ajax({
+			url: '/weather?city=Tampere',
+			complete: function(data) {
+				console.log(data);
+			}
+		});
+		</script>
+	</head>
+	<body>
+		<form action="/weather">
+		Syötä sijainti:<br>
+		<input type="text" name="city">
+		<input type="submit" value="Hae sää">
+		</form>
+		<p> <%= stringi %> </p>
+	</body>
+</html>

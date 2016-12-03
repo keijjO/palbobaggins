@@ -5,6 +5,7 @@
     "start" : "node Server.js"
   },
   "dependencies" : {
+  	"ejs" : "latest",
     "express" : "latest"
   }
 }
