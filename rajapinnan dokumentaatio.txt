@@ -41,6 +41,8 @@ paluuarvo:
 api/lakes
 Hakee lähimmät 10 järveä annetusta koordinaatista, sekä kunnan nimestä. URI parametrit tulee olla !!!!!!!!!!!
 Paluuarvona palautetaan body osassa JSON muotoinen listaus kymmenestä järvestä, joka on muotoa:
+listan alkion muoto on:
+{KoordErLat":"61.49600  ","KoordErLong":"23.61251  ","Nimi":"Likolammi"}
 
 esimerkiksi:
 api/lakes?kunta=tampere
