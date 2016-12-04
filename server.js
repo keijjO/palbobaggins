@@ -173,12 +173,12 @@ function getWeatherInCoords(req, res)  {
 
 function getNearestLakes(req,res) {
 	var kunnannimi = req.query.kunta;
-	querystring = "http://rajapinnat.ymparisto.fi/api/jarvirajapinta/1.0/odata/Jarvi?$top=10&$filter=substringof('"+kunnannimi+"',%20KuntaNimi)%20eq%20true&$select=KoordErLat,KoordErLong,Nimi";
+	querystring = "/api/jarvirajapinta/1.0/odata/Jarvi?$top=10&$filter=substringof('"+kunnannimi+"',%20KuntaNimi)%20eq%20true&$select=KoordErLat,KoordErLong,Nimi";
 	var options = {
-	  host: 'http://rajapinnat.ymparisto.fi',
+	  host: 'rajapinnat.ymparisto.fi',
 	  path: querystring
 	};
-	var req = http.get(querystring, function(rs) {
+	var req = http.get(options, function(rs) {
 	  //console.log('STATUS: ' + res.statusCode);
 	  //console.log('HEADERS: ' + JSON.stringify(res.headers));
 
@@ -191,7 +191,7 @@ function getNearestLakes(req,res) {
 	  }).on('end', function() {
 		var body = Buffer.concat(bodyChunks);
 		//console.log('BODY: ' + body);
-		res.write(JSON.parse(body));
+		res.write(body);
 		res.end();
 		
 	  })
