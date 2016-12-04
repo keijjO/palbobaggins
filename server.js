@@ -18,14 +18,6 @@ router.get("/",function(req,res){
 router.get("/karttasivu",function(req,res){
 	res.sendFile(path + "karttasivu.html")
 });
-router.get("/kartta", function(req,res){
-  res.sendFile(path + "testi.html");
-});
-router.get("/saa", function(req, res) {
-  res.render(path + "weather.ejs")
-});
-router.get("/testi", testi);
-router.get("/testi2", testi2);
 app.use("/",router);
 
 router.get('/weather/', getWeather);
@@ -33,6 +25,7 @@ router.get('/weather/', getWeather);
 router.get('/nearestcity/', getNearestCity);
 router.get('/coordinates', getCoordinates);
 router.get('/weatherInCoords', getWeatherInCoords);
+router.get('/lakes',getNearestLakes);
 
 
 
@@ -59,8 +52,8 @@ function getWeather(req,res,next){
 	};
 	
 	var req = http.get(options, function(rs) {
-	  console.log('STATUS: ' + res.statusCode);
-	  console.log('HEADERS: ' + JSON.stringify(res.headers));
+	  //console.log('STATUS: ' + res.statusCode);
+	  //console.log('HEADERS: ' + JSON.stringify(res.headers));
 
 	  // Buffer the body entirely for processing as a whole.
 	  var bodyChunks = [];
@@ -70,11 +63,11 @@ function getWeather(req,res,next){
 		
 	  }).on('end', function() {
 		var body = Buffer.concat(bodyChunks);
-		console.log('BODY: ' + body);
+		//console.log('BODY: ' + body);
 		var bodyJSON = JSON.parse(body);
 		var celcius = Math.round(bodyJSON.main.temp - 273.15);
 		var temperature = celcius + " C";
-		res.render('result.ejs', {temp: temperature, city: cityName});
+		res.redirect('/lakes?city='+city+'&temp='+temperature);
 		res.end();
 		
 	  })
@@ -103,8 +96,8 @@ function getNearestCity(req,res,next){
 	};
 	
 	var req = https.get(options, function(rs) {
-	  console.log('STATUS: ' + res.statusCode);
-	  console.log('HEADERS: ' + JSON.stringify(res.headers));
+	  //console.log('STATUS: ' + res.statusCode);
+	  //console.log('HEADERS: ' + JSON.stringify(res.headers));
 
 	  // Buffer the body entirely for processing as a whole.
 	  var bodyChunks = [];
@@ -114,7 +107,7 @@ function getNearestCity(req,res,next){
 		
 	  }).on('end', function() {
 		var body = Buffer.concat(bodyChunks);
-		console.log('BODY: ' + body);
+		//console.log('BODY: ' + body);
 		var bodyJSON = JSON.parse(body);
 		var city = bodyJSON.results[0].name;
 		//console.log(city);
@@ -150,11 +143,9 @@ function getCoordinates(req, res)  {
 		
 	  	}).on('end', function() {
 			var body = Buffer.concat(bodyChunks);
-			console.log('BODY: ' + body);
 			var bodyJSON = JSON.parse(body);
 			var lati = bodyJSON.results[0].geometry.location.lat;
 			var longi = bodyJSON.results[0].geometry.location.lng;
-			console.log(lati, longi);
 			res.redirect('/nearestcity?lati='+lati+'&longi='+longi);
 			res.end();
 			
@@ -174,18 +165,42 @@ function getWeatherInCoords(req, res)  {
 	
 };
 
+function getNearestLakes(req,res) {
+	var city = req.query.city;
+	var temperature = req.query.temp;
 
+	querystring = "http://rajapinnat.ymparisto.fi/api/jarvirajapinta/1.0/odata/Jarvi?$top=10&$filter=substringof('"+city+"',%20KuntaNimi)%20eq%20true&$select=KoordErLat,KoordErLong,Nimi";
+	console.log(querystring);
+	res.write(querystring);
+	var options = {
+	  host: 'http://rajapinnat.ymparisto.fi',
+	  path: querystring
+	};
+	var req = http.get(querystring, function(rs) {
+	  //console.log('STATUS: ' + res.statusCode);
+	  //console.log('HEADERS: ' + JSON.stringify(res.headers));
 
-
-
-function testi(req, res, next) {
-	console.log("toinen testi");
-	res.send("jeee");
-};
-function testi2(req,res,next) {
-  	var req = http.get("http://www.google.fi", function(res) {
-  		console.log('STATUS: ' + res.statusCode);
+	  // Buffer the body entirely for processing as a whole.
+	  var bodyChunks = [];
+	  rs.on('data', function(chunk) {
+		// You can process streamed parts here...
+		bodyChunks.push(chunk);
+		
+	  }).on('end', function() {
+		var body = Buffer.concat(bodyChunks);
+		//console.log('BODY: ' + body);
+		var bodyJSON = JSON.parse(body);
+		var information = bodyJSON.value;
+		console.log(information);
+		res.render('result.ejs', {temp: temperature, city: cityName, info: information});
+		res.end();
+		
+	  })
 	});
-  	console.log("yee");
-  	next();
-};
+	req.on('error', function(e) {
+	 console.log('ERROR: ' + e.message);
+	});
+		
+	
+	req.end();
+}
