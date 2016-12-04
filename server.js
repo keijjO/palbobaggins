@@ -26,6 +26,7 @@ router.get('/nearestcity/', getNearestCity);
 router.get('/coordinates', getCoordinates);
 router.get('/weatherInCoords', getWeatherInCoords);
 router.get('/lakes',getNearestLakes);
+router.get('/kunta', getNearestKunta);
 
 
 
@@ -45,6 +46,7 @@ function getWeather(req,res,next){
 
 	var key = "1cc4e57135b51120a49c601ab2c82ed8";
 	var cityName = req.query.city;
+	var kunta = req.query.kunta;
 	console.log("city " + cityName)
 	var options = {
 	  host: 'api.openweathermap.org',
@@ -67,7 +69,7 @@ function getWeather(req,res,next){
 		var bodyJSON = JSON.parse(body);
 		var celcius = Math.round(bodyJSON.main.temp - 273.15);
 		var temperature = celcius + " C";
-		res.redirect('/lakes?city='+city+'&temp='+temperature);
+		res.redirect('/lakes?city='+cityName+'&temp='+temperature+'&kunta='+kunta);
 		res.end();
 		
 	  })
@@ -88,6 +90,7 @@ function getNearestCity(req,res,next){
 	var key="AIzaSyCkYwq88Z6EjbAUpeXxXbGEBYJyQHvVH7g"
 	var lati = req.query.lati;
 	var longi = req.query.longi;
+	var kunnannimi = req.query.kunta;
 	var https = require('https');
 	console.log("lati" + lati +"longi" +longi)
 	var options = {
@@ -111,7 +114,7 @@ function getNearestCity(req,res,next){
 		var bodyJSON = JSON.parse(body);
 		var city = bodyJSON.results[0].name;
 		//console.log(city);
-		res.redirect('/weather?city='+city);
+		res.redirect('/weather?city='+city+'&kunta='+kunnannimi);
 		res.end();
 		
 	  })
@@ -146,7 +149,8 @@ function getCoordinates(req, res)  {
 			var bodyJSON = JSON.parse(body);
 			var lati = bodyJSON.results[0].geometry.location.lat;
 			var longi = bodyJSON.results[0].geometry.location.lng;
-			res.redirect('/nearestcity?lati='+lati+'&longi='+longi);
+			console.log("osote haettu");
+			res.redirect('/kunta?lat='+lati+'&longi='+longi);
 			res.end();
 			
 	  })
@@ -168,8 +172,8 @@ function getWeatherInCoords(req, res)  {
 function getNearestLakes(req,res) {
 	var city = req.query.city;
 	var temperature = req.query.temp;
-
-	querystring = "http://rajapinnat.ymparisto.fi/api/jarvirajapinta/1.0/odata/Jarvi?$top=10&$filter=substringof('"+city+"',%20KuntaNimi)%20eq%20true&$select=KoordErLat,KoordErLong,Nimi";
+	var kunnannimi = req.query.kunta;
+	querystring = "http://rajapinnat.ymparisto.fi/api/jarvirajapinta/1.0/odata/Jarvi?$top=10&$filter=substringof('"+kunnannimi+"',%20KuntaNimi)%20eq%20true&$select=KoordErLat,KoordErLong,Nimi";
 	console.log(querystring);
 	res.write(querystring);
 	var options = {
@@ -192,7 +196,7 @@ function getNearestLakes(req,res) {
 		var bodyJSON = JSON.parse(body);
 		var information = bodyJSON.value;
 		console.log(information);
-		res.render('result.ejs', {temp: temperature, city: cityName, info: information});
+		res.render('result.ejs', {temp: temperature, city: city, info: information, kunta: kunnannimi});
 		res.end();
 		
 	  })
@@ -202,5 +206,37 @@ function getNearestLakes(req,res) {
 	});
 		
 	
+	req.end();
+}
+function getNearestKunta(req, res) {
+	var lat = req.query.lat;
+	var long = req.query.longi;
+	querystring = 'http://api.geonames.org/findNearbyPlaceNameJSON?lat='+lat+'&lng='+long+'&cities=cities1000&username=demo';
+	var req = http.get(querystring, function(rs) {
+	  //console.log('STATUS: ' + res.statusCode);
+	  //console.log('HEADERS: ' + JSON.stringify(res.headers));
+
+	  // Buffer the body entirely for processing as a whole.
+	  var bodyChunks = [];
+	  rs.on('data', function(chunk) {
+		// You can process streamed parts here...
+		bodyChunks.push(chunk);
+		
+	  }).on('end', function() {
+		var body = Buffer.concat(bodyChunks);
+		//console.log('BODY: ' + body);
+		var bodyJSON = JSON.parse(body);
+		console.log(bodyJSON);
+		var kunnannimi = bodyJSON.geonames[0].name;
+		console.log(kunnannimi);
+		res.redirect("/nearestcity?lati="+lat+"&longi="+long+"&kunta="+kunnannimi);
+		res.end();
+		
+	  })
+	});
+	req.on('error', function(e) {
+	 console.log('ERROR: ' + e.message);
+	});
+
 	req.end();
 }
