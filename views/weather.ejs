@@ -1,7 +1,9 @@
 
 <!DOCTYPE html>
 <html lang="en">
-	 <head>
+  <head>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
     <style>
       #map {
         height: 400px;
@@ -10,11 +12,11 @@
     </style>
   </head>
   <body>
+  	<div class="container">
     <h3>Kartta</h3>
 	<p> paina hiirellä paikkaa josta haluat tietää sään</p>
-	
     <div id="map"></div>
-	
+	<div class="jumbotron text-center">
 	<form action="/weatherInCoords", id="form">
 		Koordinaatit:<br>
 		<input type="text" name="lat" id = "lat">
@@ -27,7 +29,8 @@
 		Syötä sijainti:<br>
 		<input type="text" name="address">
 		<input type="submit" value="Hae sää">
-		</form>
+	</form>
+    </div>
     <script>
       function initMap() {
 	  
@@ -55,7 +58,6 @@
 			map: map
 		  });
 		  
-		  alert(src);
 		 }
 	  loadKmlLayer("http://dl.getdropbox.com/u/1094010/KunnatKML/Kunnat.kml",map);
 	  function changeFormValues(lat,lng){
@@ -71,7 +73,7 @@
 	<script>
 	
 	</script>
-	
+	</div>
   </body>
 	
 	
