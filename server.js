@@ -29,9 +29,9 @@ router.get('/lakes',getNearestLakes);
 router.get('/kunta', getNearestKunta);
 
 
-
-app.listen(3000,function(){
-  console.log("Live at Port 3000");
+var port = process.env.PORT || 8080;
+app.listen(port,function(){
+  console.log("Live at Port "+ port);
 });
 
 //käytä näin
