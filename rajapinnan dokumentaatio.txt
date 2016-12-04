@@ -1,0 +1,47 @@
+RAJAPINNAN DOKUMENTAATIO
+
+Kaikkiin osoitteisiin käytettään http-protokollan get-operaatiota.
+Parametrit joita operaatiot tarvitsevat välitetään uri-parametreina.
+Paluuarvot annetaan vastausen body-osassa.
+Paluuarvot ovat muodoltaan joko JSON-muodossa, tai joidenkin operaatioiden tuloksena vain yksittäinen merkkijono.
+
+Rajapinnassa olevat osoitteet:
+
+/weather/
+Hakee halutun kaupungin tämähetkisen säätilan. Haluttu kaupunki tulee antaa uri-parametrina city={kaupungin_nimi}
+esimerkiksi:
+/weather?city=tampere
+
+
+/nearestcity/
+Hakee lähimmän kaupungin annetuirta koordinaateista. Koordinaatit tulee antaa uri-parametreina lati={latitude}&longi={longitude}
+Paluuarvona tulee http get pyynnön surauksena body osassa pelkästään kaupungin nimi
+esimerkki:
+/nearestcity?lati=62.614806&longi=28.618057
+paluuarvo:
+tampere
+
+
+/coordinates
+Hakee syötetyn osoitteen koordinaatit. Osoite tulee antee parametrina adress={osoite}
+Paluuarvona koordinaatit
+esimerkiksi:
+coordinates?address=orivedenkatu+3
+
+/lakes
+Hakee lähimmät 10 järveä annetusta koordinaatista, sekä kunnan nimestä. URI parametrit tulee olla !!!!!!!!!!!
+Paluuarvona palautetaan body osassa JSON muotoinen listaus kymmenestä järvestä, joka on muotoa:
+!!!!!!!!!!!!!!!!!!!!
+esimerkiksi:
+!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+/kunta
+Hakee kunnan jonka alueella syötetyt koordinaatit ovat. URI- parametreina lat={latitude}&longi={longitude}
+Paluuarvona palautetaan kunnan nimi.
+esimerkiksi:
+/kunta?lat=23.465676&longi=56.234456
+
