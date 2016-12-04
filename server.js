@@ -71,7 +71,7 @@ function getWeather(req,res,next){
 		var temperature = celcius + " C";
 		res.redirect('/lakes?city='+cityName+'&temp='+temperature+'&kunta='+kunta);
 		res.end();
-		
+		return;
 	  })
 	});
 	req.on('error', function(e) {
@@ -116,6 +116,7 @@ function getNearestCity(req,res,next){
 		//console.log(city);
 		res.redirect('/weather?city='+city+'&kunta='+kunnannimi);
 		res.end();
+		return;
 		
 	  })
 	});
@@ -152,6 +153,7 @@ function getCoordinates(req, res)  {
 			console.log("osote haettu");
 			res.redirect('/kunta?lat='+lati+'&longi='+longi);
 			res.end();
+			return;
 			
 	  })
 	});
@@ -166,6 +168,7 @@ function getWeatherInCoords(req, res)  {
 	var lng = req.query.lng;
 	res.redirect("/nearestcity?lati="+lat+"&longi="+lng);
 	res.end();
+	return;
 	
 };
 
@@ -174,8 +177,6 @@ function getNearestLakes(req,res) {
 	var temperature = req.query.temp;
 	var kunnannimi = req.query.kunta;
 	querystring = "http://rajapinnat.ymparisto.fi/api/jarvirajapinta/1.0/odata/Jarvi?$top=10&$filter=substringof('"+kunnannimi+"',%20KuntaNimi)%20eq%20true&$select=KoordErLat,KoordErLong,Nimi";
-	console.log(querystring);
-	res.write(querystring);
 	var options = {
 	  host: 'http://rajapinnat.ymparisto.fi',
 	  path: querystring
@@ -231,6 +232,7 @@ function getNearestKunta(req, res) {
 		console.log(kunnannimi);
 		res.redirect("/nearestcity?lati="+lat+"&longi="+long+"&kunta="+kunnannimi);
 		res.end();
+		return;
 		
 	  })
 	});
