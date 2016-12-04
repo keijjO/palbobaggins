@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+  	<title> PalboBaggins </title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
     <style>
@@ -11,22 +12,20 @@
        }
     </style>
   </head>
-  <body>
+  <body background="http://www.funchap.com/wp-content/uploads/2015/08/nice-caribbean-beach-wallpaper-2015.jpg" style="background-size: cover;background-repeat:no-repeat;">
   	<div class="container">
-    <h3>Kartta</h3>
-	<p> paina hiirellä paikkaa josta haluat tietää sään</p>
-    <div id="map"></div>
 	<div class="jumbotron text-center">
+	<h3>Palvelullamme haet sinua lähimpänä olevat uimarannat ja sään</h3>
+	<div id="map"></div>
 	<form action="/weatherInCoords", id="form">
-		Koordinaatit:<br>
+		Klikkaa karttaa ja paina hae:<br>
 		<input type="text" name="lat" id = "lat">
 		<input type="text" name="lng" id = "lng">
 		<input type="submit" value="Hae sää">
 	</form>
 	<br>
-	<h3> Tai hae osoitteella </h3>
+	<h3> Tai hae osoitteella:</h3>
 	<form action="/coordinates">
-		Syötä sijainti:<br>
 		<input type="text" name="address">
 		<input type="submit" value="Hae sää">
 	</form>

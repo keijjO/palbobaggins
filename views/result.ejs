@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+  	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
     <style>
        #map {
         height: 400px;
@@ -8,27 +10,25 @@
        }
     </style>
   </head>
-  <body>
+  <body background="http://www.funchap.com/wp-content/uploads/2015/08/nice-caribbean-beach-wallpaper-2015.jpg" style="background-size: cover;background-repeat:no-repeat;">
+ 	<div class="container">
+    <div class="jumbotron text-center">
+	<h3> <%= kunta %> </h3>
+	<p> <%= temp %> </p>
     <div id="map"></div>
     <script>
 	  function initMap() {
 	  	// Järvien tiedot tulee yhtenä json muodossa näkyy consolista
 	  	// sisältää ne mut en varma miten parsitaan vai pitäiskö
 	  	// bäkkäristä suoraan lyödä 10 eri objektia
-        var Tampere = {lat: 61.449360, lng: 23.85317};
+	  	var text = "<%= origcoords %>";
+	  	var coords = text.split(",");
+	  	var latitude = coords[0].substring(0,8);
+	  	var longitude = coords[1].substring(0,8);
+        var Tampere = {lat: parseFloat(latitude), lng: parseFloat(longitude)};
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 10,
           center: Tampere
-        });
-		
-		map.addListener('click', function(event) {
-           var coords = event.latLng;
-		   var lat = coords.lat();
-		   var lng = coords.lng();
-		   
-		   //alert( " lat: "+coords.lat()+ "long:" +coords.lng());
-		   changeFormValues(lat,lng);
-		   
         });
 		
 		addMarker("<%= info0 %>", map);
@@ -49,8 +49,8 @@
 	  function addMarker(infoObjectString, map){
 			var array = infoObjectString.split(",");
 			var name = array[0];
-			var lat1 = parseInt(array[1]);
-			var lng1=  parseInt(array[2]);
+			var lat1 = parseFloat(array[1]);
+			var lng1=  parseFloat(array[2]);
 			var coords = {lat: lat1, lng: lng1}
 			var marker = new google.maps.Marker({
 			  position: coords,
@@ -71,11 +71,8 @@
 	<script>
 	
 	</script>
-		<h3> <%= city %> </h3>
-		<p> Lämpötila </p>
-		<p> <%= temp %> </p>
-		<p> <%= kunta %> </p>	
-		
-		
+		<p> Lämpötila haettu lähimmästä kaupungista (<%= city %>)</p>	
+	</div>
+	</div>
   </body>
 </html>

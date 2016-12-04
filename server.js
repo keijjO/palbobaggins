@@ -43,7 +43,7 @@ function getWeather(req,res,next){
 	//Calls 1day: 50,000 
 	//Threshold: 7,200 
 	//Hourly forecast: 5 
-
+	var origcoords = req.query.origcoords;
 	var key = "1cc4e57135b51120a49c601ab2c82ed8";
 	var cityName = req.query.city;
 	var kunta = req.query.kunta;
@@ -69,7 +69,7 @@ function getWeather(req,res,next){
 		var bodyJSON = JSON.parse(body);
 		var celcius = Math.round(bodyJSON.main.temp - 273.15);
 		var temperature = celcius + " C";
-		res.redirect('/lakes?city='+cityName+'&temp='+temperature+'&kunta='+kunta);
+		res.redirect('/lakes?city='+cityName+'&temp='+temperature+'&kunta='+kunta+'&origcoords='+origcoords);
 		res.end();
 		return;
 	  })
@@ -113,8 +113,8 @@ function getNearestCity(req,res,next){
 		//console.log('BODY: ' + body);
 		var bodyJSON = JSON.parse(body);
 		var city = bodyJSON.results[0].name;
-		//console.log(city);
-		res.redirect('/weather?city='+city+'&kunta='+kunnannimi);
+		var origcoords = lati+","+longi;
+		res.redirect('/weather?city='+city+'&kunta='+kunnannimi+'&origcoords='+origcoords);
 		res.end();
 		return;
 		
@@ -176,6 +176,7 @@ function getNearestLakes(req,res) {
 	var city = req.query.city;
 	var temperature = req.query.temp;
 	var kunnannimi = req.query.kunta;
+	var origcoords = req.query.origcoords;
 	querystring = "http://rajapinnat.ymparisto.fi/api/jarvirajapinta/1.0/odata/Jarvi?$top=10&$filter=substringof('"+kunnannimi+"',%20KuntaNimi)%20eq%20true&$select=KoordErLat,KoordErLong,Nimi";
 	var options = {
 	  host: 'http://rajapinnat.ymparisto.fi',
@@ -203,7 +204,7 @@ function getNearestLakes(req,res) {
 		console.log(values);
 		res.render('result.ejs', {temp: temperature, city: city, info0: values[0],info1: values[1], info2: values[2],
 			info3: values[3],info4: values[4],info5: values[5],info6: values[6],info7: values[7],info8: values[8],
-			info9: values[9],kunta: kunnannimi});
+			info9: values[9],kunta: kunnannimi, origcoords: origcoords});
 		res.end();
 		
 	  })
