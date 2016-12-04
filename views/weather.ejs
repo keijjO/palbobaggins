@@ -50,15 +50,7 @@
         });
 		
 		
-		function loadKmlLayer(src, map) {
-		  var kmlLayer = new google.maps.KmlLayer(src, {
-			suppressInfoWindows: false,
-			preserveViewport: true,
-			map: map
-		  });
-		  
-		 }
-	  loadKmlLayer("http://dl.getdropbox.com/u/1094010/KunnatKML/Kunnat.kml",map);
+		
 	  function changeFormValues(lat,lng){
 		document.getElementById("lat").value = lat;
 		document.getElementById("lng").value = lng;
