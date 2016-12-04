@@ -11,22 +11,23 @@ router.use(function (req,res,next) {
 });
 app.set('view engine', 'ejs'); // set up ejs for templating
 
+router.get("/api/", client);
 router.get("/",function(req,res){
   res.render(path + "weather.ejs");
 });
 
-router.get("/karttasivu",function(req,res){
+router.get("/api/karttasivu",function(req,res){
 	res.sendFile(path + "karttasivu.html")
 });
 app.use("/",router);
 
-router.get('/weather/', getWeather);
+router.get('/api/weather/', getWeather);
 
-router.get('/nearestcity/', getNearestCity);
-router.get('/coordinates', getCoordinates);
-router.get('/weatherInCoords', getWeatherInCoords);
-router.get('/lakes',getNearestLakes);
-router.get('/kunta', getNearestKunta);
+router.get('/api/nearestcity/', getNearestCity);
+router.get('/api/coordinates', getCoordinates);
+router.get('/api/weatherInCoords', getWeatherInCoords);
+router.get('/api/lakes',getNearestLakes);
+router.get('/api/kunta', getNearestKunta);
 
 
 var port = process.env.PORT || 8080;
@@ -69,7 +70,7 @@ function getWeather(req,res,next){
 		var bodyJSON = JSON.parse(body);
 		var celcius = Math.round(bodyJSON.main.temp - 273.15);
 		var temperature = celcius + " C";
-		res.redirect('/lakes?city='+cityName+'&temp='+temperature+'&kunta='+kunta+'&origcoords='+origcoords);
+		res.write(temperature);
 		res.end();
 		return;
 	  })
@@ -90,7 +91,6 @@ function getNearestCity(req,res,next){
 	var key="AIzaSyCkYwq88Z6EjbAUpeXxXbGEBYJyQHvVH7g"
 	var lati = req.query.lati;
 	var longi = req.query.longi;
-	var kunnannimi = req.query.kunta;
 	var https = require('https');
 	console.log("lati" + lati +"longi" +longi)
 	var options = {
@@ -113,8 +113,7 @@ function getNearestCity(req,res,next){
 		//console.log('BODY: ' + body);
 		var bodyJSON = JSON.parse(body);
 		var city = bodyJSON.results[0].name;
-		var origcoords = lati+","+longi;
-		res.redirect('/weather?city='+city+'&kunta='+kunnannimi+'&origcoords='+origcoords);
+		res.write(city);
 		res.end();
 		return;
 		
@@ -150,8 +149,8 @@ function getCoordinates(req, res)  {
 			var bodyJSON = JSON.parse(body);
 			var lati = bodyJSON.results[0].geometry.location.lat;
 			var longi = bodyJSON.results[0].geometry.location.lng;
-			console.log("osote haettu");
-			res.redirect('/kunta?lat='+lati+'&longi='+longi);
+			var answer = lati+","+longi;
+			res.write(answer);
 			res.end();
 			return;
 			
@@ -173,10 +172,7 @@ function getWeatherInCoords(req, res)  {
 };
 
 function getNearestLakes(req,res) {
-	var city = req.query.city;
-	var temperature = req.query.temp;
 	var kunnannimi = req.query.kunta;
-	var origcoords = req.query.origcoords;
 	querystring = "http://rajapinnat.ymparisto.fi/api/jarvirajapinta/1.0/odata/Jarvi?$top=10&$filter=substringof('"+kunnannimi+"',%20KuntaNimi)%20eq%20true&$select=KoordErLat,KoordErLong,Nimi";
 	var options = {
 	  host: 'http://rajapinnat.ymparisto.fi',
@@ -195,16 +191,7 @@ function getNearestLakes(req,res) {
 	  }).on('end', function() {
 		var body = Buffer.concat(bodyChunks);
 		//console.log('BODY: ' + body);
-		var bodyJSON = JSON.parse(body);
-		values = [];
-		for (i=0;i<10;i++) {
-			bufferString = bodyJSON.value[i].Nimi + " ," + bodyJSON.value[i].KoordErLat + "," + bodyJSON.value[i].KoordErLong;
-			values.push(bufferString);
-		}
-		console.log(values);
-		res.render('result.ejs', {temp: temperature, city: city, info0: values[0],info1: values[1], info2: values[2],
-			info3: values[3],info4: values[4],info5: values[5],info6: values[6],info7: values[7],info8: values[8],
-			info9: values[9],kunta: kunnannimi, origcoords: origcoords});
+		res.write(JSON.parse(body));
 		res.end();
 		
 	  })
@@ -232,12 +219,10 @@ function getNearestKunta(req, res) {
 		
 	  }).on('end', function() {
 		var body = Buffer.concat(bodyChunks);
-		//console.log('BODY: ' + body);
 		var bodyJSON = JSON.parse(body);
 		console.log(bodyJSON);
 		var kunnannimi = bodyJSON.geonames[0].name;
-		console.log(kunnannimi);
-		res.redirect("/nearestcity?lati="+lat+"&longi="+long+"&kunta="+kunnannimi);
+		res.write(kunnannimi);
 		res.end();
 		return;
 		
@@ -248,4 +233,106 @@ function getNearestKunta(req, res) {
 	});
 
 	req.end();
+}
+
+function client(req,res) {
+	var http = require("http");
+	var address = req.query.address;
+	var lati = req.query.lat;
+	var longi = req.query.lng;
+	if (address != "" || typeof(address) != "undefined") {
+		var req = http.get("http://localhost:8080/api/coordinates?address="+address, function(rs) {
+			var bodyChunks = [];
+			  rs.on('data', function(chunk) {
+				// You can process streamed parts here...
+				bodyChunks.push(chunk);
+				
+			  }).on('end', function() {
+				var body = Buffer.concat(bodyChunks);
+				//console.log('BODY: ' + body);
+				var bodyJSON = body.toString();
+				console.log("jee:"+bodyJSON);
+				lati = bodyJSON.split(",")[0];
+				console.log(lati);
+				longi = bodyJSON.split(",")[1];
+				res.end();
+			  })			
+		});
+		req.end();
+	}
+	var origcoords = lati+","+longi;
+	console.log("jee2:"+origcoords);
+	// Haetaan kunta
+	var kunta;
+	var kuntareq = http.get("http://localhost:8080/api/kunta?lat="+lati+'&longi='+longi, function(rs) {
+		var bodyChunks = [];
+		rs.on('data', function(chunk) {
+		// You can process streamed parts here...
+		bodyChunks.push(chunk);
+
+		}).on('end', function() {
+		var body = Buffer.concat(bodyChunks);
+		var bodyJSON = body;
+		kunta = bodyJSON;
+		res.end();
+		})
+	});
+	kuntareq.end();
+	var city;
+	cityreq = http.get("http://localhost:8080/api/city?lat="+lati+'&longi='+longi, function(rs) {
+		var bodyChunks = [];
+		rs.on('data', function(chunk) {
+		// You can process streamed parts here...
+		bodyChunks.push(chunk);
+
+		}).on('end', function() {
+		var body = Buffer.concat(bodyChunks);
+		//console.log('BODY: ' + body);
+		var bodyJSON = body;
+		city = bodyJSON;
+		res.end();
+		})
+	});
+	cityreq.end();
+	var weather;
+	wreq = http.get("http://localhost:8080/api/weather?city="+city, function(rs) {
+		var bodyChunks = [];
+		rs.on('data', function(chunk) {
+		// You can process streamed parts here...
+		bodyChunks.push(chunk);
+
+		}).on('end', function() {
+		var body = Buffer.concat(bodyChunks);
+		//console.log('BODY: ' + body);
+		var bodyJSON = body;
+		weather = bodyJSON;
+		res.end();
+		return;
+		})
+	});
+	wreq.end();
+	var lakes = [];
+	lakesreq = http.get("http://localhost:8080/api/lakes?kunta="+kunta, function(rs) {
+		var bodyChunks = [];
+		rs.on('data', function(chunk) {
+		// You can process streamed parts here...
+		bodyChunks.push(chunk);
+
+		}).on('end', function() {
+		var body = Buffer.concat(bodyChunks);
+		//console.log('BODY: ' + body);
+		var bodyJSON = JSON.parse(body);
+		for (i=0;i<10;i++) {
+			bufferString = bodyJSON.value[i].Nimi + " ," + bodyJSON.value[i].KoordErLat + "," + bodyJSON.value[i].KoordErLong;
+			lakes.push(bufferString);
+		}	
+		lakes = bodyJSON;
+		res.end();
+		return;
+		})
+	});
+	lakesreq.end();
+	res.render('result.ejs', {temp: weather, city: city, info0: lakes[0],info1: lakes[1], info2: lakes[2],
+		info3: lakes[3],info4: lakes[4],info5: lakes[5],info6: lakes[6],info7: lakes[7],info8: lakes[8],
+		info9: lakes[9],kunta: kunta, origcoords: origcoords});
 }
