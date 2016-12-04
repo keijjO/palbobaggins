@@ -4,6 +4,12 @@ Kaikkiin osoitteisiin käytettään http-protokollan get-operaatiota.
 Parametrit joita operaatiot tarvitsevat välitetään uri-parametreina.
 Paluuarvot annetaan vastausen body-osassa.
 Paluuarvot ovat muodoltaan joko JSON-muodossa, tai joidenkin operaatioiden tuloksena vain yksittäinen merkkijono.
+Rajapinnan avulla voidaan:
+	-hakea osoitteen avulla koordinaattteja. 
+	-hakea koordinaattien avulla lähin kaupunki.
+	-hakea koordinaattien avulla kunta jossa koordinaatit sijaitsevat.
+	-hakea kymmenen lähintä järveä koordinaattien ja kunnan avulla. 
+
 
 Rajapinnassa olevat osoitteet:
 
