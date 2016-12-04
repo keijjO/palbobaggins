@@ -233,7 +233,7 @@ function client_coords(req,res) {
 	var address = req.query.address;
 	var lati = req.query.lat;
 	var longi = req.query.lng;
-	if (address != "" || typeof(address) != "undefined") {
+	if (address != undefined || typeof(address) != "undefined") {
 		var req = http.get("http://localhost:8080/api/coordinates?address="+address, function(rs) {
 			var bodyChunks = [];
 			  rs.on('data', function(chunk) {
@@ -251,7 +251,7 @@ function client_coords(req,res) {
 	}).end();
 	}
 	else {
-		res.redirect('/api/2?lat='+lati+'&lng'+longi);
+		res.redirect('/api/2?lat='+lati+'&lng='+longi);
 	}
 }
 function client_kunta(req, res) {
@@ -266,6 +266,7 @@ function client_kunta(req, res) {
 		}).on('end', function() {
 			var body = Buffer.concat(bodyChunks);
 			var bodyJSON = body.toString();
+			console.log(lati,longi, bodyJSON);
 			res.redirect('/api/3?kunta='+bodyJSON+"&lat="+lati+'&longi='+longi);
 		  })		
 		}).end();
@@ -319,6 +320,7 @@ function client_jarvet(req, res) {
 		}).on('end', function() {
 			var body = Buffer.concat(bodyChunks);
 			var bodyJSON = JSON.parse(body);
+			console.log(bodyJSON);
 			lakes = [];
 			for (i=0;i<10;i++) {
 				bufferString = bodyJSON.value[i].Nimi + " ," + bodyJSON.value[i].KoordErLat + "," + bodyJSON.value[i].KoordErLong;
