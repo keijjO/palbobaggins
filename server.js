@@ -166,7 +166,7 @@ function getCoordinates(req, res)  {
 function getWeatherInCoords(req, res)  {
 	var lat = req.query.lat;
 	var lng = req.query.lng;
-	res.redirect("/nearestcity?lati="+lat+"&longi="+lng);
+	res.redirect("/kunta?lat="+lat+"&longi="+lng);
 	res.end();
 	return;
 	
@@ -195,9 +195,15 @@ function getNearestLakes(req,res) {
 		var body = Buffer.concat(bodyChunks);
 		//console.log('BODY: ' + body);
 		var bodyJSON = JSON.parse(body);
-		var information = bodyJSON.value;
-		console.log(information);
-		res.render('result.ejs', {temp: temperature, city: city, info: information, kunta: kunnannimi});
+		values = [];
+		for (i=0;i<10;i++) {
+			bufferString = bodyJSON.value[i].Nimi + " ," + bodyJSON.value[i].KoordErLat + "," + bodyJSON.value[i].KoordErLong;
+			values.push(bufferString);
+		}
+		console.log(values);
+		res.render('result.ejs', {temp: temperature, city: city, info0: values[0],info1: values[1], info2: values[2],
+			info3: values[3],info4: values[4],info5: values[5],info6: values[6],info7: values[7],info8: values[8],
+			info9: values[9],kunta: kunnannimi});
 		res.end();
 		
 	  })
