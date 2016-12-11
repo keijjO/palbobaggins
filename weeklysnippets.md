@@ -1,6 +1,6 @@
-Oppimispäiväkirja
+﻿Oppimispäiväkirja
 
-Harjoitustyön aikataulutus ei mennyt täysin napppiin. 
+Harjoitustyön aikataulutus ei mennyt täysin nappiin. 
 Alkuperäisestä suunitelmasta, jossa oli hakea lähin uimaranta,
 sää uimarannalla, ja uimarannan vedenlaatutiedot poikettiin hieman.
 Loppujen lopuksi asikasohjelma osaa hakea koordinaattien tai osoitteen perusteella 10 lähintä järveä siinä kunnassa missä koordinaatit ovat 
@@ -25,7 +25,8 @@ Miska:
 - suunnitelman kirjoitusta
 
 Atte:
-
+- Rajapintoihin perehtymistä
+- Docker harjoitustyön tekoa
 
 
 viimeinen viikko:
@@ -36,6 +37,10 @@ Miska:
 - karttaan markkerien merkkaaminen
 - rajapinnan dokumentaation kirjoitusta. 
 
+Atte:
+- Frontin kanssa kikkailua.
+- Backendii kaikki muu mitä jää jäljelle Miskalta.
+- Heroku deploy
 
 opitut asiat:
 
@@ -44,3 +49,9 @@ Miska:
 - Rajapintojen dokumentaation tutustuminen ja oikeanlaisten valmiiden palveluiden löytäminen
 - http get pyyntöjen kanssa kikkailu 
 - google maps -apin kanssa toiminta
+
+Atte:
+- Jonkin verran lisää node.js.
+- Ajankäyttöö pitäis parantaa mutta docker ja muut kurssit söi sitä aikalailla.
+- Palvelun pisto herokuu.
+- Jotkut suomalaiset apit(järvi api) eivät tue ääkkösiä vaikka niiden datassa löytyy ääkkösiä.

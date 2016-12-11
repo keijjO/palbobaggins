@@ -146,9 +146,13 @@ function getCoordinates(req, res)  {
 	  	}).on('end', function() {
 			var body = Buffer.concat(bodyChunks);
 			var bodyJSON = JSON.parse(body);
-			var lati = bodyJSON.results[0].geometry.location.lat;
-			var longi = bodyJSON.results[0].geometry.location.lng;
-			var answer = lati+","+longi;
+			if (bodyJSON.results[0] == undefined) {
+				var answer = "Something went wrong";
+			} else {
+				var lati = bodyJSON.results[0].geometry.location.lat;
+				var longi = bodyJSON.results[0].geometry.location.lng;
+				var answer = lati+","+longi;
+			}
 			res.write(answer);
 			res.end();
 			return;
@@ -243,10 +247,13 @@ function client_coords(req,res) {
 			  }).on('end', function() {
 				var body = Buffer.concat(bodyChunks);
 				var bodyJSON = body.toString();
-				
-				lati = bodyJSON.split(",")[0];
-				longi = bodyJSON.split(",")[1];
-				res.redirect('/api/2?lat='+lati+'&lng='+longi);
+				if ( bodyJSON == "Something went wrong") {
+					res.render('error.ejs');
+				} else {
+					lati = bodyJSON.split(",")[0];
+					longi = bodyJSON.split(",")[1];
+					res.redirect('/api/2?lat='+lati+'&lng='+longi);
+				}
 			  })			
 	}).end();
 	}
@@ -262,11 +269,9 @@ function client_kunta(req, res) {
 		rs.on('data', function(chunk) {
 		// You can process streamed parts here...
 		bodyChunks.push(chunk);
-			
 		}).on('end', function() {
 			var body = Buffer.concat(bodyChunks);
 			var bodyJSON = body.toString();
-			console.log(lati,longi, bodyJSON);
 			res.redirect('/api/3?kunta='+bodyJSON+"&lat="+lati+'&longi='+longi);
 		  })		
 		}).end();
@@ -320,15 +325,18 @@ function client_jarvet(req, res) {
 		}).on('end', function() {
 			var body = Buffer.concat(bodyChunks);
 			var bodyJSON = JSON.parse(body);
-			console.log(bodyJSON);
 			lakes = [];
-			for (i=0;i<10;i++) {
-				bufferString = bodyJSON.value[i].Nimi + " ," + bodyJSON.value[i].KoordErLat + "," + bodyJSON.value[i].KoordErLong;
-				lakes.push(bufferString);
-			}	
-			res.render('result.ejs', {temp: saa, city: city, info0: lakes[0],info1: lakes[1], info2: lakes[2],
-			info3: lakes[3],info4: lakes[4],info5: lakes[5],info6: lakes[6],info7: lakes[7],info8: lakes[8],
-			info9: lakes[9],kunta: kunta, origcoords: orgcrd});
+			if (bodyJSON.value[0] == undefined) {
+				res.render('error.ejs');
+			} else {	
+				for (i=0;i<10;i++) {
+					bufferString = bodyJSON.value[i].Nimi + " ," + bodyJSON.value[i].KoordErLat + "," + bodyJSON.value[i].KoordErLong;
+					lakes.push(bufferString);
+				}	
+				res.render('result.ejs', {temp: saa, city: city, info0: lakes[0],info1: lakes[1], info2: lakes[2],
+				info3: lakes[3],info4: lakes[4],info5: lakes[5],info6: lakes[6],info7: lakes[7],info8: lakes[8],
+				info9: lakes[9],kunta: kunta, origcoords: orgcrd});	
+			}
 		  })		
 		}).end();
 }
