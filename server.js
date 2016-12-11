@@ -69,10 +69,17 @@ function getWeather(req,res,next){
 		var body = Buffer.concat(bodyChunks);
 		//console.log('BODY: ' + body);
 		var bodyJSON = JSON.parse(body);
-		var celcius = Math.round(bodyJSON.main.temp - 273.15);
-		var temperature = celcius + " C";
-		res.write(temperature);
-		res.end();
+		if (bodyJSON.main == undefined) {
+			res.write("Something went wrong");
+			res.end();
+		}
+		else {
+			var bodyJSON = JSON.parse(body);
+			var celcius = Math.round(bodyJSON.main.temp - 273.15);
+			var temperature = celcius + " C";
+			res.write(temperature);
+			res.end();
+		}
 		return;
 	  })
 	});
@@ -307,7 +314,11 @@ function client_saa(req, res) {
 		}).on('end', function() {
 			var body = Buffer.concat(bodyChunks);
 			var bodyJSON = body.toString();
+			if (bodyJSON == "Something went wrong") {
+				res.render('error.ejs');
+			} else {
 			res.redirect('/api/5?kunta='+kunta+"&origcoords="+orgcrd+'&city='+city+'&weather='+bodyJSON);
+			}
 		  })		
 		}).end();
 }
@@ -318,6 +329,9 @@ function client_jarvet(req, res) {
 	var saa = req.query.weather;
 	var req = http.get("http://localhost:8080/api/lakes?kunta="+kunta, function(rs) {
 		var bodyChunks = [];
+		if (res.statusCode != 200) {
+			res.render('error.ejs');
+		}
 		rs.on('data', function(chunk) {
 		// You can process streamed parts here...
 		bodyChunks.push(chunk);
@@ -326,10 +340,11 @@ function client_jarvet(req, res) {
 			var body = Buffer.concat(bodyChunks);
 			var bodyJSON = JSON.parse(body);
 			lakes = [];
+			var length = Object.keys(bodyJSON.value).length;
 			if (bodyJSON.value[0] == undefined) {
 				res.render('error.ejs');
 			} else {	
-				for (i=0;i<10;i++) {
+				for (i=0;i<length;i++) {
 					bufferString = bodyJSON.value[i].Nimi + " ," + bodyJSON.value[i].KoordErLat + "," + bodyJSON.value[i].KoordErLong;
 					lakes.push(bufferString);
 				}	
