@@ -37,3 +37,6 @@ Client ID (Consumer Key)
 dj0yJmk9Y1hPZkI4b3phTjdhJmQ9WVdrOWNVcE1VR0ZVTkdrbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD01Yg--
 Client Secret (Consumer Secret)
 0a02624f9c07c9c125a9c9fb238af58fb2d476d4
+
+Heroku osoite:
+http://palbobaggins.herokuapp.com/
